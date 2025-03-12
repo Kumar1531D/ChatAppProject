@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    <color name="background_color">#F5F5F5</color>-->
+    <color name="received_message_color">#FF6F00</color> <!-- Orange gradient -->
+    <color name="sent_message_color">#6200EE</color>    <!-- Purple gradient -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+<!--    <color name="hint_color">#808080</color>-->
+    <color name="new_name_background">#A0B06C</color>
+    <color name="primary_dark">#075E54</color>  <!-- WhatsApp-like Green -->
+    <color name="primary_light">#128C7E</color>
+    <color name="accent_color">#25D366</color>  <!-- WhatsApp Action Button Green -->
+
+    <!-- Background Colors -->
+    <color name="background_color">#ECE5DD</color>  <!-- Light Gray WhatsApp BG -->
+
+
+    <!-- Chat Bubbles -->
+    <color name="chat_bubble_sent">#A0B06C</color>  <!-- Light Green -->
+    <color name="chat_bubble_received">#FFFFFF</color>  <!-- White -->
+
+    <!-- Toolbar Colors -->
+    <color name="toolbar_text">#FFFFFF</color>
+    <color name="toolbar_icon">#FFFFFF</color>
+
+    <!-- Input Box & Hint -->
+    <color name="hint_color">#888888</color>
+    <color name="gray">#BDBDBD</color>
+</resources>

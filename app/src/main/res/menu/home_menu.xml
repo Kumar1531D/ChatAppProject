@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Settings Option (Visible in Toolbar) -->
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/settings"
+        android:orderInCategory="1"
+        app:showAsAction="always"/>
+
+    <!-- Logout Option (Only in Overflow Menu) -->
+    <item
+        android:id="@+id/action_addFriend"
+        android:title="@string/add_friend"
+        android:orderInCategory="2"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_createGroup"
+        android:title="@string/create_a_group"
+        android:orderInCategory="3"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_logout"
+        android:title="@string/logout"
+        android:orderInCategory="3"
+        app:showAsAction="never"/>
+</menu>

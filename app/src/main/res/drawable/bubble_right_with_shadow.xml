@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="12dp"/>
+    <solid android:color="@color/chat_bubble_sent"/>
+    <padding android:left="8dp" android:right="8dp" android:top="4dp" android:bottom="4dp"/>
+</shape>
+
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    &lt;!&ndash; Shadow Layer &ndash;&gt;-->
+<!--    <item>-->
+<!--        <shape android:shape="rectangle">-->
+<!--            <solid android:color="#20000000" /> &lt;!&ndash; Shadow color (black with 20% opacity) &ndash;&gt;-->
+<!--            <corners android:topLeftRadius="16dp"-->
+<!--                android:topRightRadius="0dp"-->
+<!--                android:bottomLeftRadius="16dp"-->
+<!--                android:bottomRightRadius="16dp"/>-->
+<!--            <padding-->
+<!--                android:bottom="4dp"-->
+<!--                android:left="4dp"-->
+<!--                android:right="4dp"-->
+<!--                android:top="4dp"/>-->
+<!--        </shape>-->
+<!--    </item>-->
+
+<!--    &lt;!&ndash; Background Layer &ndash;&gt;-->
+<!--    <item>-->
+<!--        <shape android:shape="rectangle">-->
+<!--            <solid android:color="#03DAC6" /> &lt;!&ndash; Sent message color &ndash;&gt;-->
+<!--            <corners android:topLeftRadius="16dp"-->
+<!--                android:topRightRadius="0dp"-->
+<!--                android:bottomLeftRadius="16dp"-->
+<!--                android:bottomRightRadius="16dp"/>-->
+<!--        </shape>-->
+<!--    </item>-->
+<!--</layer-list>-->
