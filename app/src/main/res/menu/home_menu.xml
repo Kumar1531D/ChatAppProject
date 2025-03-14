@@ -11,6 +11,11 @@
 
     <!-- Logout Option (Only in Overflow Menu) -->
     <item
+        android:id="@+id/action_profilePhoto"
+        android:title="@string/add_profile_photo"
+        android:orderInCategory="2"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_addFriend"
         android:title="@string/add_friend"
         android:orderInCategory="2"

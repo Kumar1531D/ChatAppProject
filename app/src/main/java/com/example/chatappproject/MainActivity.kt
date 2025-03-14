@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,6 +14,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatappproject.api.RetrofitClient
@@ -26,13 +30,19 @@ import com.example.chatappproject.models.Group
 import com.example.chatappproject.models.InsertFriend
 import com.example.chatappproject.models.InsertGroup
 import com.example.chatappproject.websocket.WebSocketService
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import okhttp3.WebSocketListener
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var friendsAdapter: FriendsAdapter
     private lateinit var groupsAdapter: GroupsAdapter
     private var ws: okhttp3.WebSocket? = null
+    private lateinit var uName : String
 
     private val sendMessageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -64,6 +75,11 @@ class MainActivity : AppCompatActivity() {
                 ws?.send(jsonMessage.toString())
             }
         }
+    }
+
+    companion object {
+        private const val REQUEST_CODE_IMAGE_PICK = 100
+        private const val REQUEST_CODE_PERMISSION = 101
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        val uName : String = SessionManager.getLoggedInUser().toString()
+        uName = SessionManager.getLoggedInUser().toString()
         fetchFriends(uName)
         fetchGroups(uName)
 
@@ -100,6 +116,11 @@ class MainActivity : AppCompatActivity() {
             sendMessageReceiver,
             IntentFilter("SEND_MESSAGE")
         )
+
+//        // Request permission if needed
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_PERMISSION)
+//        }
 
     }
 
@@ -160,7 +181,82 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.action_profilePhoto -> {
+                openImagePicker()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun openImagePicker() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+        }
+        startActivityForResult(intent, REQUEST_CODE_IMAGE_PICK)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
+            val imageUri: Uri? = data.data
+            if (imageUri != null) {
+                uploadProfilePhoto(uName, imageUri)
+            } else {
+                Toast.makeText(this, "Failed to get image URI", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun uploadProfilePhoto(username: String, imageUri: Uri) {
+        val contentResolver = contentResolver
+
+        // Get InputStream from URI
+        val inputStream = contentResolver.openInputStream(imageUri)
+        if (inputStream == null) {
+            Toast.makeText(this, "Failed to open image", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Create a temporary file
+        val file = File(cacheDir, "temp_profile_photo.jpg")
+        file.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val part = MultipartBody.Part.createFormData("photo", file.name, requestBody)
+
+        val usernameBody = username.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        RetrofitClient.instance.uploadProfilePhoto("addProfilePhoto", usernameBody, part)
+            .enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@MainActivity, "Profile photo updated", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@MainActivity, "Server error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, "Failed to upload profile photo: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, open the image picker
+                openImagePicker()
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

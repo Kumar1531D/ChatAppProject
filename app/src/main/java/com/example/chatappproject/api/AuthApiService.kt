@@ -15,12 +15,17 @@ import com.example.chatappproject.models.InsertMsg
 import com.example.chatappproject.models.MessagesResponse
 import com.example.chatappproject.signup.SignupRequest
 import com.example.chatappproject.signup.SignupResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface AuthApiService {
@@ -78,6 +83,14 @@ interface AuthApiService {
         @Query("action") action : String,
         @Body request: InsertGroup
     ) : Call<Void>
+
+    @Multipart
+    @POST("ChatApp/ChatServlet")
+    fun uploadProfilePhoto(
+        @Query("action") action: String,
+        @Part("username") username: RequestBody,
+        @Part photo: MultipartBody.Part
+    ): Call<ResponseBody>
 }
 
 object RetrofitClient {

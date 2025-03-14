@@ -20,4 +20,5 @@
     <string name="add_friend">Add Friend</string>
     <string name="create_a_group">Create a Group</string>
     <string name="logout">Logout</string>
+    <string name="add_profile_photo">Add Profile Photo</string>
 </resources>
